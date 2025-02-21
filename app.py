@@ -4,12 +4,16 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 import random
+import os
 
 
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:pass@192.168.0.139:5434/buyme"
+
+import os
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:pass@192.168.0.139:5434/buyme')
+
 db = SQLAlchemy(app)
 
 from datetime import datetime

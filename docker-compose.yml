@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://postgres:pass@192.168.0.139:5434/buyme  # добавь это
