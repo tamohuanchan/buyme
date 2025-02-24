@@ -1,22 +1,14 @@
-from flask import Flask, render_template, url_for, request, redirect
-from flask_sqlalchemy import  SQLAlchemy
+from flask import Flask, render_template, url_for, request, redirect, flash
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from zoneinfo import ZoneInfo
 import json
 import random
 import os
 
-
-
-
 app = Flask(__name__)
-
-import os
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:pass@192.168.0.139:5434/buyme')
+app.config.from_object('config.Config')
 
 db = SQLAlchemy(app)
-
-from datetime import datetime
 
 class Positions(db.Model):
     id = db.Column(db.String(9), primary_key=True)  # ID состоит из 9 символов
@@ -24,26 +16,31 @@ class Positions(db.Model):
     description = db.Column(db.Text, nullable=False)  # Описание товара
     characteristics = db.Column(db.JSON, nullable=True)  # Характеристики в формате JSON
     images = db.Column(db.Text, nullable=True)  # Изображения товара (строка)
-    published_at = db.Column(db.DateTime, default=datetime.utcnow)  # Дата публикации (без ZoneInfo)
-
+    published_at = db.Column(db.DateTime, default=datetime.utcnow)  # Дата публикации
 
     def __repr__(self):
-        return "<Positions %r>" % self.id
+        return f"<Positions {self.id}>"
 
-
-@app.route("/")  # главная стр
+@app.route("/")  # Главная страница
 @app.route("/home")
 def index():
     return render_template("index.html")
-
 
 @app.route("/about")
 def about():
     return render_template("about.html")
 
-# @app.route("/user/<string:user_name>")
-# def user(user_name):
-#     return render_template("user.html")
+@app.route("/registration", methods=["POST", "GET"])
+def registration():
+    if request.method == "POST":
+        nickname = request.form.get('nickname')
+        if nickname and len(nickname) > 2:
+            flash("Подтвердите почту для завершения регистрации")
+        else:
+            flash('Ошибка')
+        print(request.form)
+
+    return render_template("registration.html")
 
 @app.route("/feed")
 def feed():
@@ -91,19 +88,22 @@ def create_position():
     if request.method == "POST":
         title = request.form['title']
         description = request.form['description']
+        images_data = request.form.get('images', '').strip()
+        images = images_data if images_data else None
 
-        images_data = request.form.get('images', '').strip()  # Получаем строку, убираем лишние пробелы
-        images = images_data if images_data else None  # Оставляем строку без парсинга в JSON
+        id_value = ''.join(str(random.randint(0, 9)) for _ in range(9))
 
-        id_value = ''.join(str(random.randint(0, 9)) for _ in range(9))  # Генерируем 9-значный ID
-
+        # Проверка уникальности ID
+        while Positions.query.filter_by(id=id_value).first():
+            id_value = ''.join(str(random.randint(0, 9)) for _ in range(9))
         position = Positions(id=id_value, title=title, description=description, images=images)
         try:
             db.session.add(position)
             db.session.commit()
             return redirect('/feed')
         except Exception as e:
-            return f"Произошла ошибка: {e}"
+            db.session.rollback()
+            return f"Произошла ошибка: {str(e)}"
 
     return render_template("create_position.html")
 
