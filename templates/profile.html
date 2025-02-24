@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Карточка профиля с верхней границей -->
+            <div class="card shadow p-4 profile-card">
+                <div class="text-center">
+                    <!-- Фото профиля -->
+                    <img src="" alt="Фото профиля" class="img-fluid rounded-circle" style="max-width: 150px; height: 150px; object-fit: cover;">
+                    <h3 class="mt-3" style="color: #d3a6b6;">Имя пользователя</h3>
+                    <p class="text-muted">Здесь будет информация о пользователе.</p>
+                </div>
+                <hr>
+                <h4 class="mb-3">О себе</h4>
+                <p>Здесь будет описание пользователя. Он может рассказать о своих интересах, увлечениях или чем-то важном.</p>
+
+                <hr>
+                <h4 class="mb-3">Посты пользователя</h4>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <!-- Статический пост 1 -->
+                        <div class="card">
+                            <img src="" class="card-img-top" alt="Пост 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Заголовок поста</h5>
+                                <p class="card-text">Краткое описание поста...</p>
+                                <a href="#" class="btn btn-primary">Читать больше</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <!-- Статический пост 2 -->
+                        <div class="card">
+                            <img src="" class="card-img-top" alt="Пост 2">
+                            <div class="card-body">
+                                <h5 class="card-title">Заголовок поста</h5>
+                                <p class="card-text">Краткое описание поста...</p>
+                                <a href="#" class="btn btn-primary">Читать больше</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <!-- Статический пост 3 -->
+                        <div class="card">
+                            <img src="" class="card-img-top" alt="Пост 3">
+                            <div class="card-body">
+                                <h5 class="card-title">Заголовок поста</h5>
+                                <p class="card-text">Краткое описание поста...</p>
+                                <a href="#" class="btn btn-primary">Читать больше</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Бесконечная прокрутка или кнопка "Загрузить больше" будет добавлена позже -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

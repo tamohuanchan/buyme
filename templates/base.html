@@ -43,11 +43,43 @@
         footer a:hover {
             color: #333; /* темный серый при наведении */
         }
+
+        /* Стили для флеш-сообщений */
+        .flash {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+        }
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            box-shadow: 0px 4px 10px rgba(72, 179, 50, 0.3);
+        }
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            box-shadow: 0px 4px 10px rgba(186, 34, 34, 0.3);
+        }
+        .flash.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeeba;
+            box-shadow: 0px 4px 10px rgba(255, 193, 7, 0.3);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Фиксированная шапка -->
+    <!-- шапка -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Мой сайт</a>
@@ -72,7 +104,7 @@
                         <a class="nav-link" href="/create_position">Создать позицию</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/feed">Лента</a>
+                        <a class="nav-link" href="/registration">Регистрация</a>
                     </li>
                 </ul>
             </div>
