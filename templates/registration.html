@@ -6,9 +6,16 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow p-4" style="max-width: 400px; width: 100%; border-radius: 12px; background-color: #f7f7f7;">
 
-        {% for msg in get_flashed_messages() %}
-        <div class="flash">{{msg}}</div>
-        {% endfor %}
+       флеш-сообщения
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
         <h2 class="text-center mb-4" style="color: #d3a6b6;">Регистрация</h2>
         <form method="POST" action="/registration">
