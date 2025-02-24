@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}Авторизация{% endblock %}
 
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
@@ -17,26 +17,20 @@
             {% endif %}
         {% endwith %}
 
-        <h2 class="text-center mb-4" style="color: #d3a6b6;">Регистрация</h2>
-        <form method="POST" action="/registration">
+        <h2 class="text-center mb-4" style="color: #d3a6b6;">Авторизация</h2>
+
+        <form method="POST" action="/login">
             <div class="mb-3">
-                <label for="username" class="form-label">Никнейм</label>
+                <label for="username" class="form-label">Логин</label>
                 <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Почта</label>
-                <input type="email" class="form-control" id="email" name="email" required>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Пароль</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <div class="mb-3">
-                <label for="confirm_password" class="form-label">Повторите пароль</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="btn w-100" style="background-color: #d3a6b6; color: white; border-radius: 8px;">Зарегистрироваться</button>
+
+            <button type="submit" class="btn w-100 mt-3" style="background-color: #d3a6b6; color: white; border-radius: 8px;">Войти</button>
         </form>
     </div>
 </div>
