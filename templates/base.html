@@ -79,37 +79,47 @@
 </head>
 <body>
 
-    <!-- шапка -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Мой сайт</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+   <!-- шапка -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Мой сайт</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">О нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Услуги</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Контакты</a>
+                </li>
+
+                {% if not current_user.is_authenticated %}
+                    <!-- Если пользователь не авторизован -->
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Главная</a>
+                        <a class="nav-link" href="/login">Авторизация</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">О нас</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Услуги</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Контакты</a>
-                    </li>
+                {% else %}
+                    <!-- Если пользователь авторизован -->
                     <li class="nav-item">
                         <a class="nav-link" href="/create_position">Создать позицию</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration">Регистрация</a>
+                        <a class="nav-link" href="/profile">{{ current_user.username }}</a>
                     </li>
-                </ul>
-            </div>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     {% block body %}
 
