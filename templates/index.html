@@ -10,10 +10,10 @@
         {% for item in positions %}
         <div class="grid-item">
             <div class="card">
-                {% if item.images %}
-                <img src="{{ item.images.split(',')[0] }}" class="card-img-top" alt="{{ item.title }}">
+                {% if item.image_path %}
+                    <img src="{{ item.image_path }}" class="card-img-top" alt="{{ item.title }}">
                 {% else %}
-                <img src="/static/default.jpg" class="card-img-top" alt="Нет изображения">
+                    <img src="{{ url_for('static', filename='default.jpg') }}" class="card-img-top" alt="Нет изображения">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ item.title }}</h5>
@@ -27,38 +27,29 @@
 </div>
 
 <style>
-    /* Контейнер сетки */
     .grid-container {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
     }
-
-    /* Элементы сетки */
     .grid-item {
         break-inside: avoid;
     }
-
-    /* Стили картинок */
     .card img {
         width: 100%;
         height: auto;
         border-radius: 10px;
     }
-
-    /* Адаптивность */
     @media (max-width: 1200px) {
         .grid-container {
             grid-template-columns: repeat(3, 1fr);
         }
     }
-
     @media (max-width: 992px) {
         .grid-container {
             grid-template-columns: repeat(2, 1fr);
         }
     }
-
     @media (max-width: 768px) {
         .grid-container {
             grid-template-columns: 1fr;

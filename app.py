@@ -3,13 +3,29 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+import os
 import random
 from datetime import datetime
+from werkzeug.utils import secure_filename
+from io import BytesIO
+from flask import send_file
+from waitress import serve
+
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
+
+app.config['UPLOAD_FOLDER'] = '/home/user/uploads'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+
+UPLOAD_FOLDER = 'static/uploads'
 
 # Настройка Flask-Login
 login_manager = LoginManager()
@@ -17,21 +33,26 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'  # Редирект на страницу входа
 login_manager.user_loader
 
+
 @login_manager.user_loader
 def load_user(username):
     return User.query.get(username)
 
+
 class Position(db.Model):
+    __tablename__ = 'position'
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    images = db.Column(db.String(500), nullable=True)
+    image_path = db.Column(db.String(120), nullable=True)  # Здесь хранится путь к изображению
     published_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_username = db.Column(db.String(30), db.ForeignKey('user.username'), nullable=False)
     comments = db.relationship('Comment', backref='position', lazy=True)
 
     def __repr__(self):
         return f"<Position {self.title}>"
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,18 +62,28 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.content[:50]}>"
 
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     username = db.Column(db.String(30), primary_key=True)
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     positions = db.relationship('Position', backref='user', lazy=True)
+
     def get_id(self):
         # Возвращаем уникальный идентификатор, например, username
         return self.username
+
     def __repr__(self):
         return f"<User {self.username}>"
 
+
+@app.route("/image/<int:position_id>")
+def get_image(position_id):
+    position = Position.query.get_or_404(position_id)
+    if position.images:
+        return send_file(BytesIO(position.images), mimetype='image/jpeg')
+    return 'Image not found', 404
 
 
 @app.route("/")  # Главная страница
@@ -61,14 +92,17 @@ def index():
     positions = Position.query.all()
     return render_template('index.html', positions=positions)
 
+
 @app.route("/about")
 def about():
     return render_template("about.html")
+
 
 @app.route("/product/<int:product_id>")
 def product(product_id):
     position = Position.query.get_or_404(product_id)
     return render_template("product.html", position=position)
+
 
 @app.route("/registration", methods=["POST", "GET"])
 def registration():
@@ -102,6 +136,7 @@ def registration():
 
     return render_template("registration.html")
 
+
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
@@ -121,6 +156,7 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/profile/<username>")
 @login_required  # Добавим требование авторизации
 def profile(username):
@@ -129,31 +165,46 @@ def profile(username):
 
     return render_template("profile.html", username=username)
 
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("page404.html"), 404
 
+
 @app.route("/create_position", methods=["POST", "GET"])
-@login_required  # Добавим требование авторизации
+@login_required
 def create_position():
     if request.method == "POST":
         title = request.form['title']
         description = request.form['description']
-        images_data = request.form.get('images', '').strip()
-        images = images_data if images_data else None
 
-        id_value = ''.join(str(random.randint(0, 9)) for _ in range(9))
+        image = request.files.get('images')
+        image_path = None
 
-        while Position.query.filter_by(id=id_value).first():
-            id_value = ''.join(str(random.randint(0, 9)) for _ in range(9))
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            unique_filename = f"{random.randint(1000, 9999)}_{filename}"
 
-        position = Position(id=id_value, title=title, description=description, images=images, user_username=current_user.username)
+            # Папка загрузки — ВНЕ static
+            upload_folder = app.config['UPLOAD_FOLDER']
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder, exist_ok=True)
+
+            # Полный путь для сохранения файла
+            file_path = os.path.join(upload_folder, unique_filename)
+            image.save(file_path)
+
+            # В БД записываем путь для Nginx
+            image_path = f"/uploads/{unique_filename}"
+
+        position = Position(title=title, description=description, image_path=image_path, user_username=current_user.username)
 
         try:
             db.session.add(position)
@@ -166,5 +217,6 @@ def create_position():
 
     return render_template("create_position.html")
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host='127.0.0.1', port=5000)

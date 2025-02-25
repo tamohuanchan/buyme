@@ -6,7 +6,7 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow p-4" style="max-width: 600px; width: 100%; border-radius: 12px; background-color: #f7f7f7;">
         <h2 class="text-center mb-4" style="color: #d3a6b6;">Новая позиция</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data"> <!-- enctype добавлен для загрузки файлов -->
             <div class="mb-3">
                 <label for="title" class="form-label">Название</label>
                 <input type="text" name="title" id="title" class="form-control" placeholder="Введите название" required>
@@ -17,7 +17,7 @@
             </div>
             <div class="mb-3">
                 <label for="images" class="form-label">Изображения</label>
-                <textarea name="images" id="images" class="form-control" placeholder="Введите ссылки на изображения"></textarea>
+                <input type="file" name="images" id="images" class="form-control">
             </div>
             <button type="submit" class="btn w-100" style="background-color: #d3a6b6; color: white; border-radius: 8px;">Отправить</button>
         </form>
