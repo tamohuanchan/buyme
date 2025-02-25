@@ -6,7 +6,7 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow p-4" style="max-width: 400px; width: 100%; border-radius: 12px; background-color: #f7f7f7;">
 
-       <!-- флеш-сообщения -->
+        <!-- флеш-сообщения -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="mb-4">
@@ -23,6 +23,7 @@
                 <label for="username" class="form-label">Никнейм</label>
                 <input type="text" class="form-control" id="username" name="username" required>
             </div>
+
             <div class="mb-3">
                 <label for="email" class="form-label">Почта</label>
                 <input type="email" class="form-control" id="email" name="email" required>
@@ -32,10 +33,12 @@
                 <label for="password" class="form-label">Пароль</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
+
             <div class="mb-3">
                 <label for="confirm_password" class="form-label">Повторите пароль</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
+
             <button type="submit" class="btn w-100" style="background-color: #d3a6b6; color: white; border-radius: 8px;">Зарегистрироваться</button>
         </form>
     </div>

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ position.title }} | Мой сайт
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">{{ position.title }}</h1>
+
+    {% if position.images %}
+        <div class="text-center mb-4">
+            <img src="{{ position.images }}" alt="{{ position.title }}" class="img-fluid" style="max-height: 400px;">
+        </div>
+    {% else %}
+        <div class="text-center mb-4">
+            <p>Фото товара не доступно.</p>
+        </div>
+    {% endif %}
+
+    <div class="mb-4">
+        <h3>Описание</h3>
+        <p>{{ position.description }}</p>
+    </div>
+
+    {% if position.characteristics %}
+        <div class="mb-4">
+            <h3>Характеристики</h3>
+            <ul>
+                {% for key, value in position.characteristics.items() %}
+                    <li><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="mb-4">
+        <h3>Опубликовано пользователем: {{ position.user_username }}</h3>
+        <p>Дата публикации: {{ position.published_at.strftime('%d-%m-%Y %H:%M') }}</p>
+    </div>
+
+    <div class="mb-4">
+        <h3>Комментарии</h3>
+        <ul>
+            {% for comment in comments %}
+                <li>{{ comment.content }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
